@@ -9,14 +9,14 @@ import app.common.installPprofEndpoints
 import io.ktor.client.*
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
 import io.ktor.client.request.*
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation as ServerContentNegotiation
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -31,10 +31,10 @@ fun main() {
 }
 
 fun Application.module() {
-    install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
+    install(ServerContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
     installPprofEndpoints()
 
-    val client = HttpClient(CIO) { install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) } }
+    val client = HttpClient(CIO) { install(ClientContentNegotiation) { json(Json { ignoreUnknownKeys = true }) } }
 
     routing {
         get("/healthz") { call.respond(HealthResponse()) }
@@ -183,7 +183,7 @@ private suspend fun callServiceForBool(client: HttpClient, url: String, expected
 }
 
 private suspend fun callService(client: HttpClient, url: String, body: OpRequest): JsonObject {
-    val resp = client.post(url) { setBody(body); contentType(io.ktor.http.ContentType.Application.Json) }
+    val resp = client.post(url) { setBody(body) }
     if (resp.status != HttpStatusCode.OK) error("status ${'$'}{resp.status}")
     return resp.body()
 }

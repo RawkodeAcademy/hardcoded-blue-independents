@@ -9,6 +9,7 @@ kotlin {
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("io.ktor:ktor-server-core-jvm:3.3.1")
     testImplementation(kotlin("test"))
 }
 
