@@ -1,0 +1,17 @@
+# syntax=docker/dockerfile:1.6
+
+ARG JDK_IMAGE=gradle:8.10.2-jdk21
+ARG RUNTIME_IMAGE=eclipse-temurin:21.0.2_13-jre
+
+FROM ${JDK_IMAGE} AS build
+WORKDIR /workspace
+COPY . .
+RUN gradle --no-daemon :aggregator:installDist
+
+FROM ${RUNTIME_IMAGE} AS runtime
+ENV PORT=8080
+ENV JAVA_OPTS=""
+WORKDIR /opt/aggregator
+COPY --from=build /workspace/aggregator/build/install/aggregator/ ./
+EXPOSE 8080
+ENTRYPOINT ["/opt/aggregator/bin/aggregator"]
