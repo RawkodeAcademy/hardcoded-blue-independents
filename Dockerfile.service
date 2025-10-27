@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.6
 
-ARG JDK_IMAGE=gradle:8.10.2-jdk21
-ARG RUNTIME_IMAGE=eclipse-temurin:21.0.2_13-jre
+ARG JDK_IMAGE=gradle:8.10.2-jdk17
+ARG RUNTIME_IMAGE=eclipse-temurin:17-jre
 
 FROM ${JDK_IMAGE} AS build
 WORKDIR /workspace
